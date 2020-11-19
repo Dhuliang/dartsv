@@ -86,7 +86,7 @@ class HDPrivateKey extends CKDSerializer{
         paddedKey[0] = 0;
         paddedKey.setRange(1, 33, Uint8List.fromList(masterKey).toList());
 
-        var dk = HDPrivateKey._(NetworkType.MAIN, KeyType.PRIVATE);
+        var dk = HDPrivateKey._(networkType, KeyType.PRIVATE);
         dk = this._copyParams(dk);
 
         this.nodeDepth         = 0;
