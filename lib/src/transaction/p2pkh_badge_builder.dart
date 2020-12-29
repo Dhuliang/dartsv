@@ -7,7 +7,8 @@ import 'package:sprintf/sprintf.dart';
 import '../../dartsv.dart';
 
 /// ** P2PKH locking Script ***
-mixin P2PKHLockMixin on _P2PKHLockBuilder implements LockingScriptBuilder {
+mixin P2PKHLockBadgeMixin on _P2PKHLockBadgeBuilder
+    implements LockingScriptBuilder {
   @override
   SVScript getScriptPubkey() {
     String destAddress;
@@ -37,13 +38,13 @@ mixin P2PKHLockMixin on _P2PKHLockBuilder implements LockingScriptBuilder {
   }
 }
 
-abstract class _P2PKHLockBuilder implements LockingScriptBuilder {
+abstract class _P2PKHLockBadgeBuilder implements LockingScriptBuilder {
   Address address;
   List<int> pubkeyHash;
 
-  _P2PKHLockBuilder(this.address);
+  _P2PKHLockBadgeBuilder(this.address);
 
-  _P2PKHLockBuilder.fromPublicKey(SVPublicKey publicKey,
+  _P2PKHLockBadgeBuilder.fromPublicKey(SVPublicKey publicKey,
       {NetworkType networkType = NetworkType.MAIN}) {
     address = publicKey.toAddress(networkType);
     pubkeyHash = HEX.decode(address.pubkeyHash160);
@@ -78,15 +79,16 @@ abstract class _P2PKHLockBuilder implements LockingScriptBuilder {
   }
 }
 
-class P2PKHLockBuilder extends _P2PKHLockBuilder with P2PKHLockMixin {
-  P2PKHLockBuilder(Address address) : super(address);
-  P2PKHLockBuilder.fromPublicKey(SVPublicKey publicKey,
+class P2PKHLockBadgeBuilder extends _P2PKHLockBadgeBuilder
+    with P2PKHLockBadgeMixin {
+  P2PKHLockBadgeBuilder(Address address) : super(address);
+  P2PKHLockBadgeBuilder.fromPublicKey(SVPublicKey publicKey,
       {NetworkType networkType = NetworkType.MAIN})
       : super.fromPublicKey(publicKey, networkType: networkType);
 }
 
 /// ** P2PKH unlocking Script (scriptSig / Input script) ***
-mixin P2PKHUnlockMixin on _P2PKHUnlockBuilder
+mixin P2PKHUnlockBadgeMixin on _P2PKHUnlockBadgeBuilder
     implements UnlockingScriptBuilder {
   /// The developer is required to perform their own error handling when
   /// implementing this method. You should consider throwing an exception if
@@ -108,7 +110,7 @@ mixin P2PKHUnlockMixin on _P2PKHUnlockBuilder
   }
 }
 
-abstract class _P2PKHUnlockBuilder extends SignedUnlockBuilder
+abstract class _P2PKHUnlockBadgeBuilder extends SignedUnlockBuilder
     implements UnlockingScriptBuilder {
   SVPublicKey signerPubkey;
   List<String> unlockingScriptHexs;
@@ -118,7 +120,7 @@ abstract class _P2PKHUnlockBuilder extends SignedUnlockBuilder
 
   //The signature *must* be injected later, because of the way SIGHASH works
   //Hence the contract enforced by SignedUnlockBuilder
-  _P2PKHUnlockBuilder(this.signerPubkey, this.unlockingScriptHexs);
+  _P2PKHUnlockBadgeBuilder(this.signerPubkey, this.unlockingScriptHexs);
 
   //Allow the scriptSig to be initialized from Script.
   // Parse signature and signerPubkey
@@ -153,8 +155,8 @@ abstract class _P2PKHUnlockBuilder extends SignedUnlockBuilder
 
 //FIXME: We need to figure out a way to enforce the requirement of a "fromScript()"
 // constructor here. Dunno if it's possible
-class P2PKHUnlockBadgeBuilder extends _P2PKHUnlockBuilder
-    with P2PKHUnlockMixin {
+class P2PKHUnlockBadgeBuilder extends _P2PKHUnlockBadgeBuilder
+    with P2PKHUnlockBadgeMixin {
   //Expect the Signature to be injected after the fact. Input Signing is a
   //weird one.
   P2PKHUnlockBadgeBuilder(
