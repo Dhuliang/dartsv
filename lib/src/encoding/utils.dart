@@ -218,6 +218,10 @@ Uint8List encodeBigInt(BigInt number) {
     number = number >> 8;
   }
 
+  if (result.length == 31) {
+    result = Uint8List.fromList([0, ...result]);
+  }
+
   return result;
 }
 
